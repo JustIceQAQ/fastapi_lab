@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+          integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/4.12.0/bootstrap-social.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+</head>
+<body>
+
+<style>
+    .btn-line {
+        color: #fff;
+        background-color: #07b43b;
+    }
+
+    .btn-line:hover {
+        color: #fff;
+        background-color: #08902d;
+        border-color: rgba(0, 0, 0, 0.2);
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12" style="display: flex;justify-content: center">
+            <h1>第三方 OAuth Demo</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    第三方 OAuth
+                </div>
+                <div class="card-body">
+                    <a id="github-button" class="btn btn-social btn-github" onclick="login_github()">
+                        <i class="fa-brands fa-github"></i> Sign in with GitHub
+                    </a>
+                    <br><br>
+                    <a id="yahoo-button" class="btn btn-social btn-yahoo" onclick="login_yahoo()">
+                        <i class="fa-brands fa-yahoo"></i> Sign in with Yahoo
+                    </a>
+                    <br><br>
+                    <a class="btn btn-block btn-social btn-line" onclick="login_line()">
+                        <i class="fa-brands fa-line"></i> Sign in with Line
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    登入結果
+                </div>
+                <div class="card-body">
+                    {% if data %}
+
+                    <code>
+                        {% for key, value in data.items() %}
+                        {{key}} = {{value}}
+                        <br>
+                        {% endfor %}
+                    </code>
+
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    const login_github = () => {
+        const authorize_uri = 'https://github.com/login/oauth/authorize';
+        const client_id = '55c0938749e75ea79c65';
+        const redirect_uri = 'https://rsv76v.deta.dev/login/github';
+        location.href = `${authorize_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}`;
+    }
+    const login_yahoo = () => {
+        const authorize_uri = 'https://api.login.yahoo.com/oauth2/request_auth';
+        const client_id = 'dj0yJmk9UkFiWlA1eFZsTllEJmQ9WVdrOVFuQldRVVp1WkZVbWNHbzlNQT09JnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PTU5';
+        const redirect_uri = 'https://rsv76v.deta.dev/login/yahoo';
+        location.href = `${authorize_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&language=zh-tw`;
+    }
+    const login_line = () => {
+        const authorize_uri = "https://access.line.me/oauth2/v2.1/authorize"
+        const client_id = "1657745191"
+        const redirect_uri = 'http://127.0.0.1:8000/login/line';
+        location.href = `${authorize_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&state=12345abcde&scope=profile%20openid%20email`;
+    }
+
+</script>
+
+</body>
+</html>
