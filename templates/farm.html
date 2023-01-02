@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IRIS Farm</title>
+</head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+<style>
+
+    .child {
+        flex: 1 0 19%; /* explanation below */
+        margin: 5px;
+    }
+</style>
+<body>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div id="title" class="alert alert-danger" role="alert">
+                <h1>IRIS Farm</h1>
+                <button id="connectButton" class="btn btn-primary" onclick="ConnectIrisesWs()">Connect</button>
+                <button id="disconnectButton" class="btn btn-danger d-none" onclick="DisconnectIrisesWs()">Disconnect
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id='messages' class="row row-cols-sm-3 row-cols-md-5 g-4">
+
+    </div>
+
+
+</div>
+
+<script>
+    let ws
+
+    const connectEvent = () => {
+        document.getElementById("title").classList.remove("alert-danger")
+        document.getElementById("title").classList.add("alert-success")
+        document.getElementById("connectButton").classList.add("d-none")
+        document.getElementById("disconnectButton").classList.remove("d-none")
+    }
+
+    const disconnectEvent = () => {
+        document.getElementById("title").classList.remove("alert-success")
+        document.getElementById("title").classList.add("alert-danger")
+        document.getElementById("connectButton").classList.remove("d-none")
+        document.getElementById("disconnectButton").classList.add("d-none")
+    }
+
+
+    const ConnectIrisesWs = () => {
+        ws = new WebSocket(`ws://localhost:8000/api/v1/irises/ws/`);
+        ws.onmessage = function (event) {
+            connectEvent()
+            let messages = document.getElementById('messages')
+            console.log(JSON.parse(event.data))
+
+            let mapData = JSON.parse(event.data).map((data) => {
+                return pottedPlant(data)
+            })
+            messages.innerHTML = mapData.join("")
+            // messages.innerText = ""
+            // messages.innerText = event.data
+        };
+        ws.onclose = function (event) {
+            disconnectEvent()
+        }
+    }
+
+    const DisconnectIrisesWs = () => {
+        ws.close()
+    }
+
+
+    const pottedPlant = (iris) => {
+        return `
+<div class="col">
+<div class="card child">
+  <div class="card-header">
+    iris ID: ${iris.id}
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">Petal Length: ${iris.petal_length}</li>
+    <li class="list-group-item">Petal Width: ${iris.petal_width}</li>
+    <li class="list-group-item">Sepal Length: ${iris.sepal_length}</li>
+    <li class="list-group-item">Sepal Width: ${iris.sepal_width}</li>
+    <li class="list-group-item">Class Type: ${iris.class_type}</li>
+  </ul>
+</div>
+</div>`
+    }
+
+</script>
+</body>
+</html>
